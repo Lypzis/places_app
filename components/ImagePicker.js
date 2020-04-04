@@ -1,11 +1,35 @@
 import React from 'react';
-import { View, Button, Image, Text, StyleSheet } from 'react-native';
+import { View, Button, Image, Text, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
 import Colors from '../constants/Colors';
 
 const ImgPicker = props => {
-	const takeImageHandler = () => {
+	const verifyPermissions = async () => {
+		// The permission is required for iOS and some versions android, so always use it in case
+		const res = await Permissions.askAsync(
+			Permissions.CAMERA,
+			Permissions.CAMERA_ROLL
+		);
+
+		if (res.status !== 'granted') {
+			Alert.alert(
+				'Insuficient Permissions!',
+				'You need to grant camera permissions in order to use this app.',
+				[{ text: 'ok' }]
+			);
+			return false;
+		}
+
+		return true;
+	};
+
+	const takeImageHandler = async () => {
+		const hasPermission = await verifyPermissions();
+
+		if (!hasPermission) return; // will only open camera if permission was granted
+
 		ImagePicker.launchCameraAsync();
 	};
 
