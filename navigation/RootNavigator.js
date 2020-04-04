@@ -14,19 +14,22 @@ const RootNavigator = props => (
 	<Stack.Navigator
 		screenOptions={{
 			headerStyle: {
-				backgroundColor: Platform.OS === 'android' ? Colors.primary : '#fff'
+				backgroundColor: Platform.OS === 'android' ? Colors.primary : '#fff',
 			},
-			headerTintColor: Platform.OS === 'android' ? '#fff' : Colors.primary
-		}}
-	>
+			headerTintColor: Platform.OS === 'android' ? '#fff' : Colors.primary,
+		}}>
 		<Stack.Screen
-			name="PlacesListScreen"
-			options={{ title: 'Places' }}
+			name='PlacesListScreen'
+			options={{ title: 'All Places' }}
 			component={PlacesListScreen}
 		/>
-		<Stack.Screen name="PlaceDetailScreen" component={PlaceDetailScreen} />
-		<Stack.Screen name="MapScreen" component={MapScreen} />
-		<Stack.Screen name="NewPlaceScreen" component={NewPlaceScreen} />
+		<Stack.Screen name='PlaceDetailScreen' component={PlaceDetailScreen} />
+		<Stack.Screen name='MapScreen' component={MapScreen} />
+		<Stack.Screen
+			name='NewPlaceScreen'
+			options={{ title: 'Add Place' }}
+			component={NewPlaceScreen}
+		/>
 	</Stack.Navigator>
 );
 
