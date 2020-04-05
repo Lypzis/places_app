@@ -8,6 +8,16 @@ import ReduxThunk from 'redux-thunk';
 
 import RootNavigator from './navigation/RootNavigator';
 import placesReducer from './store/reducers/places';
+import { init } from './helpers/db';
+
+init()
+	.then(() => {
+		console.log('Initialized database!');
+	})
+	.catch(err => {
+		console.log(err);
+		console.log('Failed to initialize database!');
+	});
 
 enableScreens();
 
