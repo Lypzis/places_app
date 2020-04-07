@@ -29,8 +29,6 @@ export const addPlace = (title, image) => {
 				12.3
 			);
 
-			console.log(dbResult);
-
 			dispatch({
 				type: ADD_PLACE,
 				placeData: { id: dbResult.insertId, title: title, image: newPath },

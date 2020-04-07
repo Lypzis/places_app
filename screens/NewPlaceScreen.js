@@ -35,8 +35,10 @@ const NewPlaceScreen = props => {
 	};
 
 	const onLocationSelectedHandler = location => {
-		console.log(location);
+		//console.log(location);
 	};
+
+	console.log(props);
 
 	return (
 		<ScrollView>
@@ -48,7 +50,10 @@ const NewPlaceScreen = props => {
 					value={titleValue}
 				/>
 				<ImagePicker onImageTaken={onImageTakenHandler} />
-				<LocationPicker onLocationSelected={onLocationSelectedHandler} />
+				<LocationPicker
+					{...props}
+					onLocationSelected={onLocationSelectedHandler}
+				/>
 				<Button
 					title='Save Place'
 					color={Colors.primary}
