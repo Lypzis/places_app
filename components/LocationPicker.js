@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	View,
 	Button,
@@ -16,6 +16,21 @@ import MapPreview from './MapPreview';
 const LocationPicker = props => {
 	const [isFetching, setIsFetching] = useState(false);
 	const [pickedLocation, setPickedLocation] = useState();
+
+	const mapPickedLocation = props.route.params;
+	const { onLocationSelected } = props;
+
+	useEffect(() => {
+		// if a locatino was picked(marked), update the state pointing to its direction
+		// showing on the map
+		if (mapPickedLocation) {
+			setPickedLocation({
+				lat: mapPickedLocation.latitude,
+				lng: mapPickedLocation.longitude,
+			});
+			onLocationSelected(mapPickedLocation);
+		}
+	}, [mapPickedLocation, onLocationSelected]);
 
 	const verifyPermissions = async () => {
 		// The permission is required for iOS and some versions android, so always use it in case
@@ -44,12 +59,14 @@ const LocationPicker = props => {
 				timeout: 5000,
 			});
 
-			console.log(location);
 			setPickedLocation({
 				lat: location.coords.latitude,
 				lng: location.coords.longitude,
 			});
-			props.onLocationSelected(location);
+			props.onLocationSelected({
+				latitude: location.coords.latitude,
+				longitude: location.coords.longitude,
+			});
 			setIsFetching(false);
 		} catch (err) {
 			setIsFetching(false);
