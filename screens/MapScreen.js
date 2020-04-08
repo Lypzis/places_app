@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -17,14 +17,20 @@ const Touch =
 		: TouchableOpacity;
 
 const MapScreen = props => {
+	const { params } = props.route;
+
 	props.navigation.setOptions({
-		headerRight: () => (
-			<Touch onPress={savePickedLocationHandler}>
-				<View style={styles.headerButton}>
-					<Text style={styles.headerButtonText}>Save</Text>
-				</View>
-			</Touch>
-		),
+		headerRight: () => {
+			if (params !== undefined && params.readOnly) return null;
+
+			return (
+				<Touch onPress={savePickedLocationHandler}>
+					<View style={styles.headerButton}>
+						<Text style={styles.headerButtonText}>Save</Text>
+					</View>
+				</Touch>
+			);
+		},
 	});
 
 	const [markedLocation, setMarkedLocation] = useState();
@@ -36,8 +42,7 @@ const MapScreen = props => {
 		longitudeDelta: 0.0421,
 	};
 
-	if (props.route.params !== undefined) {
-		const { params } = props.route;
+	if (params !== undefined) {
 		mapRegion = {
 			...mapRegion,
 			latitude: params.lat,
@@ -45,7 +50,20 @@ const MapScreen = props => {
 		};
 	}
 
+	useEffect(() => {
+		const setPredefinedLocation = () => {
+			setMarkedLocation({
+				latitude: params.lat,
+				longitude: params.lng,
+			});
+		};
+
+		if (params !== undefined) setPredefinedLocation();
+	}, []);
+
 	const selectedLocation = event => {
+		if (params !== undefined && params.readOnly) return;
+
 		setMarkedLocation({
 			latitude: event.nativeEvent.coordinate.latitude,
 			longitude: event.nativeEvent.coordinate.longitude,

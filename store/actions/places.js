@@ -5,7 +5,7 @@ import { insertPlace, fetchPlaces } from '../../helpers/db';
 export const ADD_PLACE = 'ADD_PLACE';
 export const SET_PLACES = 'SET_PLACES';
 
-export const addPlace = (title, image) => {
+export const addPlace = (title, image, location) => {
 	return async dispatch => {
 		// splits by '/' into an array and gets the
 		// last element from pop, which is the file name
@@ -14,8 +14,17 @@ export const addPlace = (title, image) => {
 		const newPath = `${FileSystem.documentDirectory}/${fileName}`;
 
 		try {
-			// moves from the temporary path
-			// to a persistent path
+			const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?
+			latitude=${location.latitude}&
+			longitude=${location.longitude}&
+			localityLanguage=en`);
+
+			if (!res.ok) throw new Error('Something went wrong!');
+
+			const resData = await res.json();
+
+			const address = `${resData.locality}, ${resData.localityInfo.administrative[6].name}, ${resData.principalSubdivision}-${resData.countryCode}`;
+
 			await FileSystem.moveAsync({
 				from: image,
 				to: newPath,
@@ -24,14 +33,23 @@ export const addPlace = (title, image) => {
 			const dbResult = await insertPlace(
 				title,
 				newPath,
-				'Dummy address',
-				15.6,
-				12.3
+				address,
+				location.latitude,
+				location.longitude
 			);
 
 			dispatch({
 				type: ADD_PLACE,
-				placeData: { id: dbResult.insertId, title: title, image: newPath },
+				placeData: {
+					id: dbResult.insertId,
+					title: title,
+					image: newPath,
+					address: address,
+					coords: {
+						lat: location.latitude,
+						lng: location.longitude,
+					},
+				},
 			});
 		} catch (err) {
 			throw err;
@@ -43,8 +61,6 @@ export const loadPlaces = () => {
 	return async dispatch => {
 		try {
 			const dbResult = await fetchPlaces();
-
-			console.log(dbResult);
 
 			dispatch({ type: SET_PLACES, places: dbResult.rows._array });
 		} catch (err) {
