@@ -1,16 +1,16 @@
 {
 	"expo": {
-		"name": "native_app",
-		"slug": "native_app",
-		"platforms": ["ios", "android", "web"],
+		"name": "Locations",
+		"slug": "locations_app",
+		"platforms": ["ios", "android"],
 		"sdkVersion": "37.0.0",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/icon.png",
+		"icon": "./assets/placesOriginal.png",
 		"splash": {
-			"image": "./assets/splash.png",
+			"image": "./assets/splash_screen.png",
 			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#171717"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0
@@ -18,6 +18,12 @@
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": true
+		},
+		"android": {
+			"adptativeIcon": {
+				"foregroundImage": "./assets/placesAdaptative.png",
+				"backgroundImage": "#171717"
+			}
 		}
 	}
 }
